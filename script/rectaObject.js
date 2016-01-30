@@ -59,9 +59,9 @@ class RectaObject extends GameObject {
     ctx.beginPath()
     for(var i = 0; i < this.endPoints.length; i++) {
       if(i === 0)
-        ctx.moveTo(this.endPoints[0][0], this.endPoints[0][1])
+        ctx.moveTo(this.endPoints[0].x, this.endPoints[0].y)
       else
-        ctx.lineTo(this.endPoints[i][0], this.endPoints[i][1])
+        ctx.lineTo(this.endPoints[i].x, this.endPoints[i].y)
     }
     ctx.closePath()
     if(ctx.fillStyle)

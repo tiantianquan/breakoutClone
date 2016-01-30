@@ -4,11 +4,9 @@ import Matrix from './matrix'
 var Vector2 = function(x, y, space) {
   this.x = x
   this.y = y
-  this.push(x, y)
   this.space = space
 }
 
-Vector2.prototype = []
 
 //标量乘法
 Vector2.prototype.multiply = function(d) {
@@ -81,7 +79,7 @@ Vector2.prototype.scale = function(sx, sy) {
 
 //转换为普通数组
 Vector2.prototype.convertToArr = function() {
-  return [this[0], this[1]]
+  return [this.x, this.y]
 }
 
 export default Vector2

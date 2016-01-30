@@ -1,5 +1,9 @@
 import Vector2 from './lib/vector2'
 import Space from './lib/space'
+import {
+  OBB
+}
+from './lib/collision'
 
 const initOpt = {
   //中心位置
@@ -9,12 +13,12 @@ const initOpt = {
   //宽
   width: 100,
   //高
-  height: 100,
+  height: 20,
   //填充颜色
   fillStyle: '#000',
   //描边颜色
-  strokeStyle: 'red',
-  lineWidth: 2,
+  // strokeStyle: 'red',
+  // lineWidth: 2,
   ctx: document.querySelector('#c').getContext('2d'),
   //自己的坐标空间
   space: new Space({
@@ -37,8 +41,10 @@ class GameObject {
       Object.assign(this, opt)
     }
     if(this.origin.multiply === undefined) {
-      this.origin = new Vector2(this.pos[0], this.pos[1])
+      this.origin = new Vector2(this.pos.x, this.pos.y)
     }
+
+    this.obb = new OBB(this.space.origin, 0, this.width, this.height)
   }
 
   getEndPoints() {
@@ -51,19 +57,6 @@ class GameObject {
       this.endOrigin = superSpace.getRealPoint(this.endOrigin)
     }
   }
-
-  // render(cb) {
-  //   let {
-  //     ctx
-  //   } = this
-  //   ctx.fillStyle = this.fillStyle
-  //   ctx.lineWidth = this.lineWidth
-  //   ctx.strokeStyle = this.strokeStyle
-  //   ctx.beginPath()
-  //   ctx.closePath()
-  //   ctx.fill()
-  //   ctx.stroke()
-  // }
 }
 
 export default GameObject
