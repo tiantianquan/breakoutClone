@@ -11,7 +11,9 @@ class RectaObject extends GameObject {
 
     //子类构造
     const {
-      width, height, origin
+      width,
+      height,
+      origin
     } = this
 
     //内部向量点
@@ -49,7 +51,10 @@ class RectaObject extends GameObject {
    * 渲染
    */
   render() {
-    this.getEndPoints()
+    if(!this.staticObj || this.endPoints.length == 0) {
+      this.getEndPoints()
+    }
+
     let {
       ctx
     } = this

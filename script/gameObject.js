@@ -6,6 +6,7 @@ import {
 from './lib/collision'
 
 const initOpt = {
+  staticObj:false,
   //中心位置
   origin: new Vector2(0, 0),
   //最终渲染点 -- this.centerPos

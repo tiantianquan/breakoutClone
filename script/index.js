@@ -5,11 +5,22 @@ const ctx = c.getContext('2d')
 c.width = window.innerWidth
 c.height = window.innerHeight
 
-function loop(cb) {
-  cb()
-  requestAnimationFrame(() => {
-    loop(cb)
-  })
+function loop(cb, frame) {
+  let refreshTime = 1000 / frame
+  let lastTime = Date.now()
+
+  innerLoop()
+
+  function innerLoop() {
+    requestAnimationFrame(() => {
+      let nowTime = Date.now()
+      if(nowTime - lastTime > refreshTime) {
+        cb()
+        lastTime = nowTime
+      }
+      innerLoop()
+    })
+  }
 }
 
 function hackHighDpi(canvas, ctx) {
@@ -66,44 +77,49 @@ let walls = {
 walls = {
   ...walls,
   left: new RectaObject({
-      width: walls.width,
-      height: walls.height,
-      space: new Space({
-        superSpace: worldSpace,
-        origin: new Vector2(walls.height / 2, ch / 2),
-        theta: 90
-      })
-    }, true),
-    top: new RectaObject({
-      width: walls.width,
-      height: walls.height,
-      space: new Space({
-        superSpace: worldSpace,
-        origin: new Vector2(cw / 2, walls.height / 2),
-        theta: 0
-      })
-    }, true),
-    right: new RectaObject({
-      width: walls.width,
-      height: walls.height,
-      space: new Space({
-        superSpace: worldSpace,
-        origin: new Vector2(cw - walls.height / 2, ch / 2),
-        theta: 0
-      })
-    }, true),
-    bottom: new RectaObject({
-      width: walls.width,
-      height: walls.height,
-      space: new Space({
-        superSpace: worldSpace,
-        origin: new Vector2(cw / 2, ch - walls.height / 2),
-        theta: 90
-      })
-    }, true),
-    render() {
-      console.log(this.left)
-    },
+    staticObj:true,
+    width: walls.width,
+    height: walls.height,
+    space: new Space({
+      superSpace: worldSpace,
+      origin: new Vector2(-cw / 2 + walls.height / 2, 0),
+      theta: Math.PI / 2
+    })
+  }, true),
+  top: new RectaObject({
+    staticObj:true,
+    width: walls.width,
+    height: walls.height,
+    space: new Space({
+      superSpace: worldSpace,
+      origin: new Vector2(0, ch / 2 - walls.height / 2),
+    })
+  }, true),
+  right: new RectaObject({
+    staticObj:true,
+    width: walls.width,
+    height: walls.height,
+    space: new Space({
+      superSpace: worldSpace,
+      origin: new Vector2(cw / 2 - walls.height / 2, 0),
+      theta: Math.PI / 2
+    })
+  }, true),
+  bottom: new RectaObject({
+    staticObj:true,
+    width: walls.width,
+    height: walls.height,
+    space: new Space({
+      superSpace: worldSpace,
+      origin: new Vector2(0, -ch / 2 + walls.height / 2)
+    })
+  }, true),
+  render() {
+    walls.left.render()
+    walls.top.render()
+    walls.right.render()
+    walls.bottom.render()
+  },
 }
 let ball = new BallObject({
   width: 10,
@@ -120,6 +136,7 @@ let ball = new BallObject({
 
 for(let i = 0; i < 10; i++) {
   blockList.push(new RectaObject({
+    staticObj:true,
     width: 100,
     height: 20,
     space: new Space({
@@ -149,7 +166,7 @@ let main = function() {
     ball.obb.center = ball.space.origin
   }
   ball.render()
-  rectaList.forEach((r) => {
+  blockList.forEach((r) => {
     r.render()
 
     if(CollisionDetector.OBBvsOBB(ball.obb, r.obb)) {
@@ -163,8 +180,9 @@ let main = function() {
 
 
 loop(() => {
-  walls.render()
-})
+  main()
+  // walls.render()
+}, -1)
 
 //---------------------------------------------------------------
 // let r1 = new RectaObject({
